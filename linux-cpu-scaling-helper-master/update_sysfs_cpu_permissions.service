@@ -1,0 +1,12 @@
+[Unit]
+Description=Give the group `cpu_tuners` permissions to write to the files /sys/.../cpufreq/policy*/* if the `root` user can write to them
+
+[Service]
+Type=oneshot
+User=root
+# For every file of mode rw-r--r-- change mode to rw-rw-r-- and owners to root:cpu_tuners (instead of root:root)
+# mindepth and maxdepth are to identify we only want to change files inside policy* (though, it's not a very strong constraint and could be replaced with something stricter)
+ExecStart=/usr/bin/find /sys/devices/system/cpu/cpufreq/ -mindepth 2 -maxdepth 2 -type f -perm 644 -exec /bin/sh -c 'chown root:cpu_tuners "$1"; chmod 664 "$1"' _ {} \;
+
+[Install]
+WantedBy=multi-user.target

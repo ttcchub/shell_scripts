@@ -1,0 +1,10 @@
+# This file is to be put to /etc/udev/rules.d/
+# Automatically enables the default mode when charger is connected and the power mode when disconnected.
+# Still allows to manually run the script to override the automatically enabled policy
+# (i.e. the change of charger state will trigger the run of the script, but you can still run it manually).
+
+# NOTE: replace "/usr/local/bin/cpu" below with your path to the "cpu_energy_preference_switcher_plus.sh" file from this repository.
+# NOTE: if you want this to be triggered on boot, put the executable to the root filesystem, as others partitions may not be mounted yet.
+
+SUBSYSTEM=="power_supply", KERNEL=="ACAD", ATTR{online}=="0", RUN+="/usr/local/bin/cpu set power"
+SUBSYSTEM=="power_supply", KERNEL=="ACAD", ATTR{online}=="1", RUN+="/usr/local/bin/cpu set default"
